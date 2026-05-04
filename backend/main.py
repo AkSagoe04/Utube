@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException, status, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import SQLModel, Session, select
-from models import engine, User, Video, Comment, Like, get_session
+from models import engine, User, Video, Comment, Like, get_session, UserCreate
 from auth import get_password_hash, verify_password, create_access_token, get_current_user
 from typing import List
 import os
@@ -13,7 +13,7 @@ app = FastAPI(title="Utube API")
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -33,8 +33,17 @@ def read_root():
 
 # Auth Routes
 @app.post("/signup")
-def signup(user: User, session: Session = Depends(get_session)):
-    user.password_hash = get_password_hash(user.password_hash) # Using password_hash field as password input for simplicity in this MVP
+def signup(user_in: UserCreate, session: Session = Depends(get_session)):
+    # Check if user already exists
+    existing_user = session.exec(select(User).where(User.username == user_in.username)).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Username already registered")
+    
+    user = User(
+        username=user_in.username,
+        email=user_in.email,
+        password_hash=get_password_hash(user_in.password)
+    )
     session.add(user)
     session.commit()
     session.refresh(user)

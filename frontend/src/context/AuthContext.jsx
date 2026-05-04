@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }) => {
     const response = await api.post('/signup', {
       username,
       email,
-      password_hash: password // Backend expects password_hash
+      password
     })
     return response.data
   }

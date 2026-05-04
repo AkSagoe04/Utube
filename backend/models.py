@@ -10,10 +10,12 @@ def get_session():
     with Session(engine) as session:
         yield session
 
-class User(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
+class UserBase(SQLModel):
     username: str = Field(unique=True, index=True)
     email: str = Field(unique=True, index=True)
+
+class User(UserBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
     password_hash: str
     avatar_url: Optional[str] = None
     banner_url: Optional[str] = None
@@ -22,6 +24,9 @@ class User(SQLModel, table=True):
     videos: List["Video"] = Relationship(back_populates="owner")
     comments: List["Comment"] = Relationship(back_populates="user")
     likes: List["Like"] = Relationship(back_populates="user")
+
+class UserCreate(UserBase):
+    password: str
 
 class Video(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
