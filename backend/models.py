@@ -11,6 +11,7 @@ DATABASE_URL = "postgresql://postgres:password@localhost/uTube"
 engine = create_engine(DATABASE_URL)
 
 # Dependency to provide a database session to API endpoints
+# Beginners: A session is like a temporary connection to your database
 def get_session():
     with Session(engine) as session:
         yield session
@@ -29,13 +30,34 @@ class User(UserBase, table=True):
     created_at: datetime = Field(default_factory=datetime.utcnow) # Auto-set timestamp
 
     # Relationships to other tables
-    videos: List["Video"] = Relationship(back_populates="owner")
+    # Beginners: This connects the User to their Channel and activities
+    channel: Optional["Channel"] = Relationship(back_populates="user")
     comments: List["Comment"] = Relationship(back_populates="user")
     likes: List["Like"] = Relationship(back_populates="user")
 
 # Model for creating a new user (includes raw password field)
 class UserCreate(UserBase):
     password: str
+
+# --- New Channel Model ---
+# Beginners: A channel is what users create to start uploading videos
+class ChannelBase(SQLModel):
+    name: str                                                 # The display name of the channel
+    description: Optional[str] = None                         # What the channel is about
+
+class Channel(ChannelBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    # Link this channel to a specific User
+    user_id: int = Field(foreign_key="user.id", unique=True)
+    user: User = Relationship(back_populates="channel")
+    
+    # List of videos uploaded to this channel
+    videos: List["Video"] = Relationship(back_populates="channel")
+
+class ChannelCreate(ChannelBase):
+    pass
 
 # Database table representation for Videos
 class Video(SQLModel, table=True):
@@ -47,9 +69,10 @@ class Video(SQLModel, table=True):
     views: int = Field(default=0)                             # View counter
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
-    # Foreign key linking to the User who uploaded the video
-    owner_id: int = Field(foreign_key="user.id")
-    owner: User = Relationship(back_populates="videos")
+    # Link the video to the Channel it belongs to
+    # Beginners: Every video must now belong to a channel
+    channel_id: int = Field(foreign_key="channel.id")
+    channel: Channel = Relationship(back_populates="videos")
     
     # Relationships to comments and likes on this video
     comments: List["Comment"] = Relationship(back_populates="video")

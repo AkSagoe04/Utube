@@ -14,6 +14,15 @@ CREATE TABLE IF NOT EXISTS "user" (
 CREATE INDEX IF NOT EXISTS idx_user_username ON "user"(username);
 CREATE INDEX IF NOT EXISTS idx_user_email ON "user"(email);
 
+-- Channels Table
+CREATE TABLE IF NOT EXISTS channel (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    user_id INTEGER UNIQUE REFERENCES "user"(id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Videos Table
 CREATE TABLE IF NOT EXISTS video (
     id SERIAL PRIMARY KEY,
@@ -23,7 +32,7 @@ CREATE TABLE IF NOT EXISTS video (
     thumbnail_url VARCHAR(255),
     views INTEGER DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    owner_id INTEGER REFERENCES "user"(id) ON DELETE CASCADE
+    channel_id INTEGER REFERENCES channel(id) ON DELETE CASCADE
 );
 
 -- Comments Table

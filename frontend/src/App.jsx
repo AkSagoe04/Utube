@@ -1,32 +1,43 @@
 import { Routes, Route } from 'react-router-dom'
+import { useAuth } from './context/AuthContext'
 import Home from './pages/Home'
 import Watch from './pages/Watch'
 import Login from './pages/Login'
 import SchemaView from './pages/SchemaView'
+import CreateChannel from './pages/CreateChannel'
+import Upload from './pages/Upload'
+import ChannelView from './pages/ChannelView'
 import Navbar from './components/Navbar'
 import Sidebar from './components/Sidebar'
 
-// Main application component that defines the overall layout and routing
 function App() {
+  const { loading, user } = useAuth()
+
+  // Simplified loading view
+  if (loading) {
+    return (
+      <div style={{ height: '100vh', backgroundColor: '#0f0f0f', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
+        Loading...
+      </div>
+    )
+  }
+
   return (
-    // Top-level container with flexbox layout (column for navbar + content)
-    <div className="flex flex-col h-screen overflow-hidden">
-      {/* Persistent Navigation Bar at the top */}
+    <div className="flex flex-col h-screen overflow-hidden bg-background">
       <Navbar />
       
-      {/* Sidebar and Main Content area */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Persistent Sidebar on the left */}
         <Sidebar />
         
-        {/* Main scrollable area where pages are rendered */}
-        <main className="flex-1 overflow-y-auto p-4 bg-background">
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
           <Routes>
-            {/* Route definitions for different pages */}
-            <Route path="/" element={<Home />} />           {/* Homepage with video grid */}
-            <Route path="/watch/:id" element={<Watch />} />   {/* Video playback page */}
-            <Route path="/login" element={<Login />} />       {/* User login/signup page */}
-            <Route path="/schema" element={<SchemaView />} /> {/* Database schema visualization */}
+            <Route path="/" element={<Home />} />
+            <Route path="/watch/:id" element={<Watch />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/schema" element={<SchemaView />} />
+            <Route path="/create-channel" element={<CreateChannel />} />
+            <Route path="/upload" element={<Upload />} />
+            <Route path="/channel/:id" element={<ChannelView />} />
           </Routes>
         </main>
       </div>
