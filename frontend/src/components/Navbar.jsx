@@ -14,11 +14,13 @@ const Navbar = () => {
         <button className="p-2 hover:bg-white/10 rounded-full transition-colors">
           <Menu size={20} />
         </button>
-        <div className="flex items-center gap-1 cursor-pointer" onClick={() => navigate('/')}>
-          <div className="w-8 h-6 bg-accent rounded flex items-center justify-center">
-             <div className="w-0 h-0 border-t-[4px] border-t-transparent border-l-[7px] border-l-white border-b-[4px] border-b-transparent ml-0.5"></div>
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-1 cursor-pointer" onClick={() => navigate('/')}>
+            <div className="w-8 h-6 bg-accent rounded flex items-center justify-center">
+               <div className="w-0 h-0 border-t-[4px] border-t-transparent border-l-[7px] border-l-white border-b-[4px] border-b-transparent ml-0.5"></div>
+            </div>
+            <span className="text-xl font-bold tracking-tight">Utube</span>
           </div>
-          <span className="text-xl font-bold tracking-tight">Utube</span>
         </div>
       </div>
 
