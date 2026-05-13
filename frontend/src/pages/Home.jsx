@@ -50,6 +50,57 @@ const VideoCard = ({ video, index }) => {
   )
 }
 
+const MOCK_VIDEOS = [
+  {
+    id: 'mock-1',
+    title: 'Modern Architecture in the Digital Age',
+    thumbnail_url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop',
+    channel_id: 'ArchDesign',
+    views: '1.2M',
+    created_at: new Date(Date.now() - 86400000 * 2).toISOString()
+  },
+  {
+    id: 'mock-2',
+    title: 'The Future of AI: What to Expect in 2026',
+    thumbnail_url: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=2070&auto=format&fit=crop',
+    channel_id: 'TechPulse',
+    views: '850K',
+    created_at: new Date(Date.now() - 86400000 * 5).toISOString()
+  },
+  {
+    id: 'mock-3',
+    title: 'Secret Travel Destinations You Must Visit',
+    thumbnail_url: 'https://images.unsplash.com/photo-1506929194767-36a7ae7fd2ec?q=80&w=2070&auto=format&fit=crop',
+    channel_id: 'Wanderlust',
+    views: '3.4M',
+    created_at: new Date(Date.now() - 86400000 * 10).toISOString()
+  },
+  {
+    id: 'mock-4',
+    title: 'Deep House Mix 2026 | Summer Vibes',
+    thumbnail_url: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=2070&auto=format&fit=crop',
+    channel_id: 'SoundWaves',
+    views: '520K',
+    created_at: new Date(Date.now() - 86400000 * 1).toISOString()
+  },
+  {
+    id: 'mock-5',
+    title: 'Mastering the Art of Digital Painting',
+    thumbnail_url: 'https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8?q=80&w=1972&auto=format&fit=crop',
+    channel_id: 'CreativeMind',
+    views: '210K',
+    created_at: new Date(Date.now() - 86400000 * 15).toISOString()
+  },
+  {
+    id: 'mock-6',
+    title: 'Exploring the Deep Ocean: New Discoveries',
+    thumbnail_url: 'https://images.unsplash.com/photo-1551244072-5d12893278ab?q=80&w=2070&auto=format&fit=crop',
+    channel_id: 'OceanX',
+    views: '4.1M',
+    created_at: new Date(Date.now() - 86400000 * 30).toISOString()
+  }
+]
+
 const Home = () => {
   const [videos, setVideos] = useState([])
   const [loading, setLoading] = useState(true)
@@ -71,17 +122,14 @@ const Home = () => {
 
   if (loading) return <div className="p-10 text-center text-secondary">Loading the latest videos...</div>
 
+  // Use mock videos if the database is empty
+  const displayVideos = videos.length > 0 ? videos : MOCK_VIDEOS
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-y-10 gap-x-4 pb-10">
-      {videos && videos.length > 0 ? (
-        videos.map((video, i) => (
-          <VideoCard key={video.id || i} video={video} index={i} />
-        ))
-      ) : (
-        <div className="col-span-full py-20 text-center">
-          <p className="text-secondary text-lg">No videos found. Be the first to upload one!</p>
-        </div>
-      )}
+      {displayVideos.map((video, i) => (
+        <VideoCard key={video.id || i} video={video} index={i} />
+      ))}
     </div>
   )
 }
